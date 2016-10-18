@@ -1,0 +1,175 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: TrevorsPhonebook
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths 
+basePath: /
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /phonebook:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: phonebook
+    get:
+      description: Return all phonebook entries to the caller
+      # used as the method name of the controller
+      operationId: getPhonebook
+      responses:
+        200:
+          description: Success
+          schema:
+            type: array
+            items:
+            # a pointer to a definition
+              $ref: "#/definitions/phoneBookEntry"
+        # responses may fall through to errors
+        400:
+          description: Error in request
+          schema:
+            type: string
+        500:
+          description: An error occured on the server 
+          schema:
+            type: string
+    post:
+      description: adds a phonebook entry
+      parameters:
+        - name: phoneEntry
+          in: body
+          description: The phone book entry to be added
+          schema:
+            required:
+              - firstName
+              - lastName
+              - phoneNumber
+            properties:
+              firstName:
+                type: string
+              lastName:
+                type: string
+              phoneNumber:
+                type: string
+              phoneType:
+                type: string
+      responses:
+        201:
+          description: Successfully added
+          schema:
+            $ref: "#/definitions/phoneBookEntry"
+        400:
+          description: Error in request
+          schema:
+            type: string
+        500:
+          description: An error occured on the server 
+          schema:
+            type: string
+  /phonebook/{entryId}:
+    put:
+      description: modifies an existing phonebook entry
+      parameters:
+        - name: entryId
+          in: path
+          description: The id of the phone book entry to be modified
+          required: true
+          type: string
+        - name: phoneEntry
+          in: body
+          description: The phone book entry to be added
+          schema:
+            required:
+              - firstName
+              - lastName
+              - phoneNumber
+            properties:
+              firstName:
+                type: string
+              lastName:
+                type: string
+              phoneNumber:
+                type: string
+              phoneType:
+                type: string
+      responses:
+        200:
+          description: Entry successfully modified
+          schema:
+            $ref: "#/definitions/phoneBookEntry"
+        400:
+          description: Error in request
+          schema:
+            type: string
+        500:
+          description: An error occured on the server 
+          schema:
+            type: string        
+    delete:
+      description: Deletes a phone book entry
+      # used as the method name of the controller
+      operationId: Deletes a phone book entry
+      parameters:
+        - name: entryId
+          in: path
+          description: The id of the phone book entry to be modified
+          required: true
+          type: string
+        - name: phoneEntry
+          in: body
+          description: The phone book entry to be added
+          schema:
+            required:
+              - firstName
+              - lastName
+              - phoneNumber
+            properties:
+              firstName:
+                type: string
+              lastName:
+                type: string
+              phoneNumber:
+                type: string
+              phoneType:
+                type: string
+      responses:
+        204:
+          description: The item was deleted
+        # responses may fall through to errors
+        400:
+          description: Error in request
+          schema:
+            type: string
+        500:
+          description: An error occured on the server 
+          schema:
+            type: string
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  phoneBookEntry:
+    required:
+      - firstName
+      - lastName
+      - entryID
+      - phoneNumber
+    properties:
+      entryID:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      phoneNumber:
+        type: string
+      phoneType:
+        type: string
